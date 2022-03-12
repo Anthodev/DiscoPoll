@@ -41,12 +41,3 @@ jobs:
       # Check vulnerabilities
       - name: Symfony Check Vulnerabilities
         run: symfony check:security
-
-      - name: Static Analysis
-        run: make stan
-
-      - name: Lint Doctrine entities
-        run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-
-      - name: Tests
-        run: make test
