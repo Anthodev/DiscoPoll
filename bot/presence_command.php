@@ -67,7 +67,7 @@ function createOfficeMessageBuilder(
         [
             'title' => 'Présence au bureau pour la semaine du ' . $startDate . ' au ' . $endDate,
             'type' => Embed::TYPE_RICH,
-            'description' => 'Indiquer vos jours de présence prévues au bureau pour la semaine indiquée.',
+            'description' => 'Indiquer vos jours de présence prévus au bureau pour la semaine indiquée.',
             'color' => '004daa',
         ]
     );
