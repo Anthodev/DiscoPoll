@@ -4,7 +4,7 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=8.1
+ARG PHP_VERSION=8.0
 ARG CADDY_VERSION=2
 
 # "php" stage
@@ -18,7 +18,7 @@ RUN apk add --no-cache \
 		gettext \
 		git \
 		gnu-libiconv \
-    	sqlite \
+		sqlite \
 		bash \
 	;
 
@@ -37,15 +37,18 @@ RUN set -eux; \
 		icu-dev \
 		libzip-dev \
 		zlib-dev \
+		gmp-dev \
 	; \
 	\
 	docker-php-ext-configure zip; \
 	docker-php-ext-install -j$(nproc) \
 		intl \
 		zip \
+		gmp \
 	; \
 	pecl install \
 		apcu-${APCU_VERSION} \
+		uv \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
@@ -118,8 +121,8 @@ RUN set -eux; \
 VOLUME /srv/app/var
 
 RUN echo 'alias sf="php bin/console"' >> ~/.bashrc
-RUN echo 'alias phpunit="php vendor/bin/simple-phpunit"' >> ~/.bashrc
-RUN echo 'alias stan="php vendor/bin/phpstan"' >> ~/.bashrc
+RUN echo 'alias pest="php vendor/bin/pest"' >> ~/.bashrc
+RUN echo 'alias ecs="php vendor/bin/ecs"' >> ~/.bashrc
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]

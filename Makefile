@@ -1,16 +1,16 @@
 isDocker := $(shell docker info > /dev/null 2>&1 && echo 1)
-isContainerRunning := $(shell docker ps | grep symfony-php > /dev/null 2>&1 && echo 1)
+isContainerRunning := $(shell docker ps | grep discopoll > /dev/null 2>&1 && echo 1)
 user := $(shell id -u)
 group := $(shell id -g)
 
 ifeq ($(isDocker), 1)
 	ifeq ($(isContainerRunning), 1)
 		DOCKER_COMPOSE := USER_ID=$(user) GROUP_ID=$(group) docker-compose
-		DOCKER_EXEC := docker exec -u $(user):$(group) symfony-php
+		DOCKER_EXEC := docker exec -u $(user):$(group) discopoll
 		dr := $(DOCKER_COMPOSE) run --rm
 		sf := $(DOCKER_EXEC) php bin/console
 		drtest := $(DOCKER_COMPOSE) -f docker-compose.test.yml run --rm
-		php := $(DOCKER_EXEC) --no-deps php
+		php := $(DOCKER_EXEC) php
 	else
 		DOCKER_COMPOSE := USER_ID=$(user) GROUP_ID=$(group) docker-compose
 		DOCKER_EXEC :=
@@ -39,6 +39,11 @@ up:
 stop:
 	@echo "Stopping containers from project $(COMPOSE_PROJECT_NAME)..."
 	$(DOCKER_COMPOSE) stop
+	$(DOCKER_COMPOSE) ps
+
+destroy:
+	@echo "Destroying containers from project $(COMPOSE_PROJECT_NAME)..."
+	$(DOCKER_COMPOSE) down --remove-orphans
 	$(DOCKER_COMPOSE) ps
 
 restore-permissions:
@@ -103,10 +108,10 @@ test-report: phpunit.xml* test-load-fixtures ## Launch main functionnal and unit
 
 ## —— Coding standards ✨ ——————————————————————————————————————————————————————
 stan: ## Run PHPStan only
-	$(php) ./vendor/bin/phpstan analyse -l 9 src --no-progress -c phpstan.neon --memory-limit 256M
+	$(php) ./vendor/bin/phpstan analyse src --no-progress -c phpstan.neon --memory-limit 256M
 
-cs-fix: ## Run php-cs-fixer and fix the code.
-	$(php) ./vendor/bin/php-cs-fixer fix --allow-risky=yes
+ecs: ## Run PHPStan only
+	$(php) ./vendor/bin/ecs check --memory-limit 256M
 
-cs-dry: ## Dry php-cs-fixer and display code may to be change
-	$(php) ./vendor/bin/php-cs-fixer fix --dry-run --allow-risky=yes
+ecs-fix: ## Run php-cs-fixer and fix the code.
+	$(php) ./vendor/bin/ecs check --fix --memory-limit 256M

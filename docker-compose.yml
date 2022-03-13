@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   php:
-    container_name: symfony-php
+    container_name: discopoll
     build:
       context: .
       target: symfony_php
