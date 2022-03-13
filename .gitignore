@@ -1,2 +1,9 @@
+
+.env
+!.env.dist
+
+vendor/
+
 .idea
-/.env
+.idea/
+.ecs_cache
